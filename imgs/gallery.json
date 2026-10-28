@@ -1,6 +1,33 @@
 {
   "images": [
-    
+     {
+      "file": "Archimedische_spiraal.jpg",
+      "name": "Archimedische spiraal"
+    },
+      {
+      "file": "Streets_of_boston.png",
+      "name": "Streets of boston"
+    },
+   {
+      "file": "Ski_accident.png",
+      "name": "Ski accident"
+    },
+       {
+      "file": "London_baby.png",
+      "name": "London baby"
+    },
+         {
+      "file": "Early_bedtime.png",
+      "name": "Early bedtime"
+    },
+          {
+      "file": "Dierenvriend.png",
+      "name": "Dierenvriend"
+    },
+     {
+      "file": "Made_in_America.png",
+      "name": "Made in America"
+    },
      {
       "file": "mooijfy_result-11.png",
       "name": "View from the office,",
