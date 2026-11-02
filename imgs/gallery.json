@@ -5,9 +5,18 @@
       "name": "Archimedische spiraal"
     },
       {
-      "file": "Streets_of_boston.png",
-      "name": "Streets of boston"
+      "file": "ccss_office.png",
+      "name": "Office at CCSS"
     },
+      {
+      "file": "CCSpiral.png",
+      "name": "artwork at CCSS"
+    },
+       {
+      "file": "fridge.png",
+      "name": "Fridge at CCSS"
+    },
+    
    {
       "file": "Ski_accident.png",
       "name": "Ski accident"
@@ -26,7 +35,7 @@
     },
      {
       "file": "Made_in_America.png",
-      "name": "Made in America"
+      "name": "America"
     },
      {
       "file": "mooijfy_result-11.png",
@@ -37,6 +46,10 @@
       "file": "mooijfy_result-12.png",
       "name": "Proof by construction",
         "comment": "Jenga"
+    },
+      {
+      "file": " LV.png",
+      "name": "LV equation in the HFG office",
     },
   {
       "file": "mooijfy_result-14.png",
