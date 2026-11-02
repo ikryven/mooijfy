@@ -16,9 +16,10 @@
       "file": "fridge.png",
       "name": "Fridge at CCSS"
     },
-   {
-      "file": "Ski_accident.png",
-      "name": "Ski accident"
+     {
+      "file": "mooijfy_result-12.png",
+      "name": "Proof by construction",
+        "comment": "Jenga"
     },
        {
       "file": "London_baby.png",
@@ -32,19 +33,19 @@
       "file": "Dierenvriend.png",
       "name": "Dierenvriend"
     },
-     {
-      "file": "Made_in_America.png",
-      "name": "America"
-    },
+     
      {
       "file": "mooijfy_result-11.png",
       "name": "View from the office,",
-        "comment": "Boston"
+      "comment": "Boston"
     },
-      {
-      "file": "mooijfy_result-12.png",
-      "name": "Proof by construction",
-        "comment": "Jenga"
+     {
+      "file": "Streets_of_boston.png",
+      "name": "Streets of boston"
+    },
+    {
+      "file": "Made_in_America.png",
+      "name": "America"
     },
       {
       "file": "LV.png",
@@ -100,9 +101,9 @@
       "name": "Utrecht Science Park",
       "comment": "with a view on BBG"
     },
-    {
-      "file": "Streets_of_boston.png",
-      "name": "Streets of boston"
+      {
+      "file": "Ski_accident.png",
+      "name": "Ski accident"
     }
    
   ]
