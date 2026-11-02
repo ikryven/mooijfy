@@ -23,6 +23,47 @@
   }
   .slide-img.visible { opacity:1; }
 
+  /* End slide text container */
+  .end-slide {
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px;
+    opacity:0;
+    transition:opacity .25s ease;
+    background:#000;
+    width:100%;
+    height:100%;
+  }
+  .end-slide.visible { 
+    display:flex; 
+    opacity:1;
+  }
+  .end-slide h1 {
+    font-size:36px;
+    margin:0 0 20px;
+    color:#6d4aff;
+  }
+  .end-slide p {
+    font-size:18px;
+    line-height:1.6;
+    margin:0 0 24px;
+    color:#eee;
+    max-width:600px;
+  }
+  .end-slide a {
+    color:#a58bff;
+    text-decoration:none;
+    word-break:break-all;
+    border-bottom:1px dotted #a58bff;
+  }
+  .end-slide a:hover {
+    color:#fff;
+    border-bottom-color:#fff;
+  }
+
   /* Hidden by default, shown only when needed */
   .help-btn { display:none; }
   .help-btn.shown { display:flex; }
@@ -68,11 +109,18 @@
     padding:6px 12px; border-radius:6px; display:none;
   }
 
+  @media (max-width: 768px) {
+    .end-slide h1 { font-size:28px; }
+    .end-slide p { font-size:16px; }
+  }
+  
   @media (max-width: 480px) {
     .btn { width:46px; height:46px; font-size:20px; }
     .btn-round-sm { width:40px; height:40px; font-size:16px; }
     .counter { font-size:12px; min-width:64px; padding:6px 12px; }
     .controls { bottom:12px; }
+    .end-slide h1 { font-size:24px; }
+    .end-slide p { font-size:14px; padding:0 20px; }
   }
 </style>
 </head>
@@ -80,6 +128,10 @@
 
 <div class="stage">
   <img id="slide" class="slide-img" alt="">
+  <div class="end-slide" id="endSlide">
+    <h1>Congratulations!</h1>
+    <p>Now you are ready to Mooify yourself. Enjoy unlimited supply of tokens at <a href="https://ikryven.github.io/mooijfy/" target="_blank" rel="noopener">https://ikryven.github.io/mooijfy/</a></p>
+  </div>
 </div>
 
 <div class="caption" id="caption">
@@ -100,11 +152,13 @@
 (function () {
   'use strict';
 
-  var CFG = { imgDir: 'imgs', manifest: 'imgs/slideshow.json', captions: 'imgs/captions.json' };
+  var CFG = { imgDir: 'img', manifest: 'slideshow.json', captions: 'img/captions.json' };
 
   var items = [], idx = 0;
   var $ = function (id) { return document.getElementById(id); };
   var slideEl = $('slide');
+  var endSlideEl = $('endSlide');
+  var totalSlides = 0; // images + 1 end slide
   var hasCaptions = false;
 
   function esc(s) {
@@ -131,48 +185,80 @@
   function setCaption() {
     var it = items[idx];
     var capEl = $('caption');
+    var helpBtn = $('helpBtn');
+    
     $('capName').textContent = it.name || '';
     $('capComment').textContent = it.comment || '';
-    // Show caption overlay only if this slide has a title
-    if (it.name || it.comment) {
-      capEl.classList.add('visible');
-      $('helpBtn').classList.add('shown');
+    
+    // Reset caption to hidden on every new slide
+    capEl.classList.remove('visible');
+    
+    // Hide caption overlay on end slide
+    capEl.classList.remove('visible');
+    
+    // Show "?" button only if this slide HAS a caption available (not on end slide)
+    if ((it.name || it.comment) && idx < items.length) {
+      helpBtn.classList.add('shown');
     } else {
-      capEl.classList.remove('visible');
-      $('helpBtn').classList.remove('shown');
+      helpBtn.classList.remove('shown');
     }
   }
 
   function render() {
-    var it = items[idx];
+    // Check if we're on the end slide
+    var isEndSlide = idx >= items.length;
+    
     $('prevBtn').disabled = idx === 0;
-    $('nextBtn').disabled = idx === items.length - 1;
-    $('counter').textContent = (idx + 1) + ' / ' + items.length;
+    $('nextBtn').disabled = isEndSlide; // Disable next on end slide
+    $('counter').textContent = (idx + 1) + ' / ' + totalSlides;
 
-    // fade out old, load new
-    slideEl.classList.remove('visible');
-    var im = new Image();
-    im.onload = function () {
-      slideEl.src = im.src;
-      void slideEl.offsetWidth; // restart transition
-      slideEl.classList.add('visible');
-      setCaption();
-    };
-    im.onerror = function () {
-      showStatus('Could not load ' + esc(it.file || it.url));
-    };
-    im.src = imageUrl(it);
+    if (isEndSlide) {
+      // Hide image, show end slide text
+      slideEl.classList.remove('visible');
+      slideEl.src = '';
+      void slideEl.offsetWidth; // force reflow
+      
+      setTimeout(function() {
+        slideEl.style.display = 'none';
+        endSlideEl.classList.add('visible');
+        setCaption();
+      }, 250);
+    } else {
+      // Normal image slide
+      endSlideEl.classList.remove('visible');
+      slideEl.style.display = ''; // restore display
+      
+      // Fade out first
+      slideEl.classList.remove('visible');
+      
+      // Clear src to ensure old image disappears immediately
+      slideEl.src = '';
+      
+      // Wait for fade to complete, then load new image
+      setTimeout(function() {
+        var im = new Image();
+        im.onload = function () {
+          slideEl.src = im.src;
+          void slideEl.offsetWidth; // force reflow
+          slideEl.classList.add('visible');
+          setCaption();
+        };
+        im.onerror = function () {
+          showStatus('Could not load ' + esc(items[idx].file || items[idx].url));
+        };
+        im.src = imageUrl(items[idx]);
+      }, 250); // match CSS transition duration
+    }
   }
 
   function go(delta) {
     var n = idx + delta;
-    if (n < 0 || n >= items.length) return;
+    if (n < 0 || n > items.length) return; // Allow going to items.length (end slide)
     idx = n;
     render();
   }
 
   function toggleCaption() { 
-    if (!hasCaptions) return;
     $('caption').classList.toggle('visible');
   }
 
@@ -188,6 +274,7 @@
       })
       .then(function (data) {
         items = normalizeManifest(data);
+        totalSlides = items.length + 1; // +1 for end slide
         
         // Check if any captions exist before loading optional captions file
         var hasAnyCaps = items.some(function(it) {
@@ -218,7 +305,7 @@
           showStatus('No images in slideshow.json.'); 
           return; 
         }
-        showStatus(items.length + ' slide(s) loaded');
+        showStatus((items.length + 1) + ' slide(s) loaded (including end slide)');
         setTimeout(function() { $('statusEl').style.display = 'none'; }, 2000);
         render();
       })
